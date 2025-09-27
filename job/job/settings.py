@@ -12,7 +12,12 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-from decouple import config
+try:
+    from decouple import config
+except ImportError:
+    # fallback if python-decouple is not installed
+    def config(key, default=None, cast=None):
+        return default
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -23,11 +28,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY')
+if not SECRET_KEY:
+    raise Exception("SECRET_KEY not set in environment or .env file.")
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='127.0.0.1,localhost,[::1]', cast=lambda v: [s.strip() for s in v.split(',')])
+if not isinstance(ALLOWED_HOSTS, list):
+    ALLOWED_HOSTS = [ALLOWED_HOSTS]
 
 
 # Application definition
@@ -40,6 +49,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myapp',
+    'sslserver',  # Only for local development, remove in production
 ]
 
 AUTH_USER_MODEL = 'myapp.CustomUser'
@@ -67,8 +77,10 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.media',
                 'django.contrib.messages.context_processors.messages',
             ],
         },
@@ -84,7 +96,7 @@ WSGI_APPLICATION = 'job.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': config('DB_ENGINE', default='django.db.backends.sqlite3'),
-        'NAME': config('DB_NAME', default=BASE_DIR / 'db.sqlite3'),
+        'NAME': config('DB_NAME', default=os.path.join(BASE_DIR, 'db.sqlite3')),
         'USER': config('DB_USER', default=''),
         'PASSWORD': config('DB_PASSWORD', default=''),
         'HOST': config('DB_HOST', default=''),
@@ -126,7 +138,10 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 # Static files directories
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'myapp', 'static')]
+STATICFILES_DIRS = []
+static_dir = os.path.join(BASE_DIR, 'myapp', 'static')
+if os.path.isdir(static_dir):
+    STATICFILES_DIRS.append(static_dir)
 
 # Media files (User uploaded files)
 MEDIA_URL = '/media/'
@@ -142,14 +157,12 @@ LOGIN_URL = '/login/'
 
 # Email settings for sending emails on job application
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'  # Print emails to console during development
+# For production, use SMTP backend and set the following:
+# EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_PORT = 587
 # EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'your_email@gmail.com'  # Replace with your email
-# EMAIL_HOST_PASSWORD = 'your_email_password'  # Replace with your email password or app password
-# EMAIL_PORT = 587
-# EMAIL_USE_TLS = True
-# EMAIL_HOST_USER = 'your_email@gmail.com'  # Replace with your email
-# EMAIL_HOST_PASSWORD = 'your_email_password'  # Replace with your email password or app password
+# EMAIL_HOST_USER = 'your_email@gmail.com'
+# EMAIL_HOST_PASSWORD = 'your_email_password'
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
