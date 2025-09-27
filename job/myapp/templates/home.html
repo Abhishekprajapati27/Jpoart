@@ -3,7 +3,7 @@
 {% block content %}
 
 <!-- Hero Section -->
-<section class="hero-section text-center py-5 mb-5" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 15px;">
+<section class="hero-section text-center py-5 mb-5" style="background: var(--hero-bg); color: var(--stat-text); border-radius: 15px;">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
@@ -70,7 +70,7 @@
 </section>
 
 <!-- Call to Action -->
-<section class="cta-section py-5 mb-5" style="background-color: #f8f9fa; border-radius: 15px;">
+<section class="cta-section py-5 mb-5" style="background: var(--cta-bg); border-radius: 15px;">
     <div class="container text-center">
         <h2 class="fw-bold mb-4">Ready to Start Your Journey?</h2>
         <p class="lead mb-4">Join thousands of professionals who found their dream job through our platform</p>
@@ -169,6 +169,7 @@ document.addEventListener('DOMContentLoaded', function() {
 .category-card, .job-card {
     transition: all 0.3s ease;
     border-radius: 12px;
+    background: var(--category-card-bg);
 }
 
 .hover-lift:hover {
@@ -181,7 +182,7 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .stat-item h3 {
-    color: #fff;
+    color: var(--stat-text);
     text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
 }
 
@@ -194,8 +195,8 @@ document.addEventListener('DOMContentLoaded', function() {
 }
 
 .cta-section {
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    color: white;
+    background: var(--cta-bg);
+    color: var(--stat-text);
 }
 
 .cta-section .btn {

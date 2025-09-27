@@ -1,6 +1,36 @@
+/* CSS Variables for Dark Theme UI */
+:root {
+    --bg-color: #121212;
+    --text-color: #ffffff;
+    --navbar-bg: linear-gradient(90deg, #333333 70%, #8b0000 100%);
+    --navbar-text: #ffffff;
+    --navbar-hover: #ff4500;
+    --footer-bg: #1a1a1a;
+    --footer-text: #cccccc;
+    --card-bg: linear-gradient(135deg, #2a2a2a, #3a3a3a);
+    --card-shadow: rgba(255,255,255,0.1);
+    --alert-bg: #333333;
+    --hover-bg: #444444;
+    --border-color: #555555;
+    --btn-primary-bg: #007bff;
+    --btn-primary-hover: #0056b3;
+    /* Dark theme specific for inline elements */
+    --hero-bg: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    --cta-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    --stat-text: #ffffff;
+    --category-card-bg: #2a2a2a;
+    --job-card-bg: #2a2a2a;
+}
+
+body {
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: background-color 0.3s, color 0.3s;
+}
+
 /* Custom Navbar Styling with Red, White, Black Theme and Animation */
 .custom-navbar {
-    background: linear-gradient(90deg, black 70%, red 100%);
+    background: var(--navbar-bg);
     padding: 12px 0;
     box-shadow: 0 4px 16px rgba(0,0,0,0.3);
     animation: navbarFadeIn 1s ease;
@@ -18,7 +48,7 @@
 }
 
 .custom-navbar .navbar-brand {
-    color: white;
+    color: var(--navbar-text);
     font-weight: bold;
     font-size: 2rem;
     letter-spacing: 2px;
@@ -27,7 +57,7 @@
 }
 
 .custom-navbar .navbar-brand:hover {
-    color: red;
+    color: var(--navbar-hover);
     text-shadow: 2px 2px 8px black;
     animation: brandPulse 0.7s;
 }
@@ -39,7 +69,7 @@
 }
 
 .custom-navbar .nav-link {
-    color: white;
+    color: var(--navbar-text);
     margin-right: 18px;
     transition: color 0.3s, background 0.3s, transform 0.3s;
     padding: 10px 16px;
@@ -54,14 +84,14 @@
     position: absolute;
     left: 0; bottom: 0;
     width: 100%; height: 3px;
-    background: red;
+    background: var(--navbar-hover);
     transform: scaleX(0);
     transition: transform 0.3s;
 }
 
 .custom-navbar .nav-link:hover {
-    background: red;
-    color: white;
+    background: var(--navbar-hover);
+    color: var(--navbar-text);
     transform: translateY(-3px) scale(1.05);
 }
 
@@ -70,9 +100,9 @@
 }
 
 .custom-navbar .nav-link.active {
-    background: red;
-    color: white;
-    box-shadow: 0 2px 8px rgba(255,0,0,0.2);
+    background: var(--navbar-hover);
+    color: var(--navbar-text);
+    box-shadow: 0 2px 8px rgba(255,69,0,0.2);
     animation: activeLinkBounce 0.5s;
 }
 
@@ -83,7 +113,7 @@
 }
 
 .navbar-toggler {
-    background: red;
+    background: var(--navbar-hover);
     border: none;
     transition: background 0.3s, transform 0.3s;
     animation: togglerFadeIn 0.7s;
@@ -96,8 +126,8 @@
 
 /* Footer Animation */
 footer {
-    background: black;
-    color: white;
+    background: var(--footer-bg);
+    color: var(--footer-text);
     animation: footerSlideUp 1.2s;
 }
 
@@ -110,8 +140,8 @@ footer {
 .dashboard-card {
     transition: box-shadow 0.3s ease, transform 0.3s ease;
     border-radius: 12px;
-    background: linear-gradient(135deg, #ffffff, #f8f9fa);
-    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    background: var(--card-bg);
+    box-shadow: 0 4px 12px var(--card-shadow);
     padding: 1rem;
     margin: 0.3rem;
     cursor: pointer;
@@ -139,7 +169,7 @@ footer {
 }
 
 .list-hover-animate:hover {
-    background-color: #f1f3f5;
+    background-color: var(--hover-bg, #f1f3f5);
     cursor: pointer;
 }
 
