@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block title %}{{ job.title }} - Job Details{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10">
+            <div class="card border-0 shadow-lg">
+                <div class="card-header bg-primary text-white" style="background-color: #0d6efd; color: white; padding: 1.5rem;">
+                    <h2 class="mb-0 text-capitalize">{{ job.title }}</h2>
+                    <p class="mb-0">{{ job.employer.company_name }} - {{ job.location }}</p>
+                </div>
+                <div class="card-body p-5">
+                    <div class="row">
+                        <div class="col-md-8">
+                            <h4 class="fw-bold">Job Description</h4>
+                            <p>{{ job.description|linebreaks }}</p>
+
+                            <h4 class="fw-bold mt-4">Requirements</h4>
+                            <p>{{ job.requirements|linebreaks }}</p>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <h5 class="card-title fw-bold">Job Overview</h5>
+                                    <ul class="list-unstyled">
+                                        <li><strong>Job Type:</strong> {{ job.get_job_type_display }}</li>
+                                        <li><strong>Salary:</strong> {{ job.salary }}</li>
+                                        <li><strong>Category:</strong> {{ job.category.name }}</li>
+                                        <li><strong>Application Deadline:</strong> {{ job.application_deadline|date:"F d, Y" }}</li>
+                                        {% if job.contact_email %}
+                                        <li><strong>Contact:</strong> {{ job.contact_email }}</li>
+                                        {% endif %}
+                                    </ul>
+                                    <a href="{% url 'apply_job' job.id %}" class="btn btn-primary w-100 mt-3">Apply Now</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

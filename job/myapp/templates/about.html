@@ -1,0 +1,133 @@
+{% extends 'base.html' %}
+{% block title %}About - JPort{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <h1 class="display-4 fw-bold text-center mb-4">About JPort</h1>
+            <p class="lead text-center mb-5">
+                Connecting talented professionals with amazing opportunities since 2024
+            </p>
+
+            <div class="row mb-5">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body text-center p-4">
+                            <i class="fas fa-bullseye fa-3x text-primary mb-3"></i>
+                            <h3 class="h4 fw-bold">Our Mission</h3>
+                            <p class="text-muted">
+                                To create a seamless platform where job seekers and employers can connect, 
+                                making the job search process efficient and rewarding for everyone involved.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm mb-4">
+                        <div class="card-body text-center p-4">
+                            <i class="fas fa-eye fa-3x text-success mb-3"></i>
+                            <h3 class="h4 fw-bold">Our Vision</h3>
+                            <p class="text-muted">
+                                To become the leading job portal that transforms how people find meaningful work 
+                                and how companies discover exceptional talent.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row mb-5">
+                <div class="col-12">
+                    <h2 class="fw-bold mb-4">Why Choose JPort?</h2>
+                    <div class="row">
+                        <div class="col-md-4 mb-3">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-rocket fa-2x text-warning me-3 mt-1"></i>
+                                <div>
+                                    <h5 class="fw-bold">Fast & Efficient</h5>
+                                    <p class="text-muted mb-0">Quick job matching and application process</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-shield-alt fa-2x text-info me-3 mt-1"></i>
+                                <div>
+                                    <h5 class="fw-bold">Secure Platform</h5>
+                                    <p class="text-muted mb-0">Your data and privacy are our top priority</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4 mb-3">
+                            <div class="d-flex align-items-start">
+                                <i class="fas fa-users fa-2x text-success me-3 mt-1"></i>
+                                <div>
+                                    <h5 class="fw-bold">Large Community</h5>
+                                    <p class="text-muted mb-0">Join thousands of professionals and companies</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-center mt-5">
+                <h3 class="fw-bold mb-3">Ready to Get Started?</h3>
+                <p class="lead mb-4">Join our growing community today</p>
+                <div class="d-flex justify-content-center gap-3">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'job_list' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-briefcase me-2"></i>Browse Jobs
+                    </a>
+                    <a href="{% url 'post_job' %}" class="btn btn-success btn-lg">
+                        <i class="fas fa-plus me-2"></i>Post a Job
+                    </a>
+                    {% else %}
+                    <a href="{% url 'signup' %}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-user-plus me-2"></i>Sign Up
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-primary btn-lg">
+                        <i class="fas fa-sign-in-alt me-2"></i>Login
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+.about-section {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    border-radius: 15px;
+    margin: -1rem;
+    padding: 4rem 0;
+}
+
+.card {
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border-radius: 12px;
+}
+
+.card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+}
+
+.feature-icon {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 1.5rem;
+    color: white;
+}
+</style>
+{% endblock %}

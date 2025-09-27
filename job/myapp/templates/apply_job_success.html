@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}Application Submitted{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <h2>Application Submitted Successfully</h2>
+    <p>Your application for the job "{{ job.title }}" has been submitted.</p>
+    <p>We will notify the employer. Meanwhile, you can send an email directly to the employer.</p>
+    <button id="openEmailBtn" class="btn btn-primary">Open Email Client</button>
+    <a href="{% url 'job_list' %}" class="btn btn-secondary ms-2">Back to Job List</a>
+    <a href="{% url 'update_resume' %}" class="btn btn-info ms-2">View My Profile</a>
+</div>
+
+<script>
+document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById('openEmailBtn').addEventListener('click', function() {
+        var email = "{{ company_email|default_if_none:'' }}";
+        var companyName = "{{ job.employer.company_name|default_if_none:'the employer' }}";
+        var jobTitle = "{{ job.title|default_if_none:'this position' }}";
+
+        // Check if email is available
+        if (!email || email.trim() === "") {
+            alert("Company email is not available. Please contact the employer directly.");
+            return;
+        }
+
+        var subject = encodeURIComponent("Application for " + jobTitle);
+        var body = encodeURIComponent(
+            "Dear " + companyName + ",\n\nI am writing to apply for the position of " + jobTitle + ".\n\nRegards,\n[Your Name]"
+        );
+        var mailto_link = "mailto:" + email + "?subject=" + subject + "&body=" + body;
+
+        // Debug: Log the mailto link to console
+        console.log("Mailto link:", mailto_link);
+        console.log("Email:", email);
+        console.log("Company Name:", companyName);
+        console.log("Job Title:", jobTitle);
+
+        // Try to open email client
+        try {
+            window.location.href = mailto_link;
+        } catch (error) {
+            console.error("Error opening email client:", error);
+            alert("Unable to open email client. Please manually copy this email: " + email);
+        }
+    });
+});
+</script>
+{% endblock %}

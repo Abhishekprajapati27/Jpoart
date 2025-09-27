@@ -1,0 +1,248 @@
+{% extends 'base.html' %}
+{% block title %}Job Listings - Job Portal{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="display-5 fw-bold text-primary">Job Listings</h1>
+                <span class="badge bg-primary fs-6">
+                    <i class="fas fa-briefcase me-2"></i>{{ jobs|length }} Jobs Found
+                </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Search and Filters -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                    <form method="get" action="{% url 'job_list' %}" class="row g-3">
+                        <div class="col-md-8">
+                            <input type="text" name="q" class="form-control form-control-lg" 
+                                   placeholder="Search jobs by title, skills, or company..." 
+                                   value="{{ request.GET.q }}"
+                                   style="border-radius: 10px;">
+                        </div>
+                        <div class="col-md-2">
+                            <select class="form-select form-select-lg" style="border-radius: 10px;">
+                                <option selected>All Categories</option>
+                                <option>IT & Software</option>
+                                <option>Marketing</option>
+                                <option>Design</option>
+                                <option>Finance</option>
+                            </select>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-primary btn-lg w-100" 
+                                    style="border-radius: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                                <i class="fas fa-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Job Listings -->
+    <div class="row">
+        <div class="col-12">
+            {% if jobs %}
+            <div class="row g-4">
+                {% for job in jobs %}
+                <div class="col-md-6 col-lg-4">
+                    <div class="card border-0 shadow-sm h-100 job-card">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start mb-3">
+                                <div>
+                                    <h5 class="card-title fw-bold text-primary">{{ job.title }}</h5>
+                                    <p class="text-muted mb-1">{{ job.employer.company_name }}</p>
+                                    <div class="d-flex gap-2 mb-2">
+                                        <span class="badge bg-primary">{{ job.get_job_type_display }}</span>
+                                        <span class="badge bg-secondary">{{ job.location }}</span>
+                                    </div>
+                                </div>
+                                <div class="text-end">
+                                    <small class="text-muted">{{ job.created_at|timesince }} ago</small>
+                                    <br>
+                                    <button class="btn btn-sm btn-outline-primary mt-1">
+                                        <i class="fas fa-heart"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <p class="card-text text-muted mb-3">
+                                {{ job.description|truncatewords:20 }}
+                            </p>
+                            
+                            <div class="d-flex justify-content-between align-items-center">
+                                <span class="text-success fw-bold">{{ job.salary }}</span>
+                                <span class="text-warning">
+                                    <i class="fas fa-clock me-1"></i>
+                                    Apply before {{ job.application_deadline }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="card-footer bg-transparent border-0 pt-0">
+                            <div class="d-grid">
+<a href="{% url 'job_detail' job.id %}" class="btn btn-primary">
+    <i class="fas fa-paper-plane me-2"></i>Apply Now
+</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-search fa-4x text-muted mb-4"></i>
+                <h3 class="text-muted">No jobs found</h3>
+                <p class="text-muted">Try adjusting your search criteria or check back later for new opportunities.</p>
+                <a href="{% url 'job_list' %}" class="btn btn-primary btn-lg">
+                    <i class="fas fa-sync me-2"></i>Reset Search
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Pagination -->
+    {% if jobs.has_other_pages %}
+    <div class="row mt-5">
+        <div class="col-12">
+            <nav aria-label="Job pagination">
+                <ul class="pagination justify-content-center">
+                    {% if jobs.has_previous %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ jobs.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Previous">
+                            <i class="fas fa-chevron-left"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                    
+                    {% for i in jobs.paginator.page_range %}
+                    <li class="page-item {% if jobs.number == i %}active{% endif %}">
+                        <a class="page-link" href="?page={{ i }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">{{ i }}</a>
+                    </li>
+                    {% endfor %}
+                    
+                    {% if jobs.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ jobs.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}" aria-label="Next">
+                            <i class="fas fa-chevron-right"></i>
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+.card {
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.job-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.15) !important;
+}
+
+.badge {
+    border-radius: 20px;
+    padding: 6px 12px;
+    font-size: 0.75rem;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.btn-outline-primary {
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover {
+    background: #667eea;
+    border-color: #667eea;
+    transform: scale(1.1);
+}
+
+.pagination .page-link {
+    border-radius: 10px;
+    margin: 0 5px;
+    border: none;
+    color: #667eea;
+}
+
+.pagination .page-item.active .page-link {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border-color: #667eea;
+}
+
+.text-primary {
+    color: #667eea !important;
+}
+
+.job-card {
+    transition: all 0.3s ease;
+}
+
+.job-card .card-footer {
+    border-top: 1px solid rgba(0,0,0,0.1);
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add hover effects to job cards
+    const jobCards = document.querySelectorAll('.job-card');
+    jobCards.forEach(card => {
+        card.addEventListener('mouseenter', function() {
+            this.style.transform = 'translateY(-5px)';
+            this.style.boxShadow = '0 10px 25px rgba(0,0,0,0.15)';
+        });
+        
+        card.addEventListener('mouseleave', function() {
+            this.style.transform = 'translateY(0)';
+            this.style.boxShadow = '0 0.5rem 1rem rgba(0, 0, 0, 0.15)';
+        });
+    });
+
+    // Favorite button functionality
+    const favoriteButtons = document.querySelectorAll('.btn-outline-primary');
+    favoriteButtons.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.preventDefault();
+            this.classList.toggle('btn-primary');
+            this.classList.toggle('btn-outline-primary');
+            
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('fa-heart')) {
+                icon.classList.replace('fa-heart', 'fa-heart-circle-check');
+            } else {
+                icon.classList.replace('fa-heart-circle-check', 'fa-heart');
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

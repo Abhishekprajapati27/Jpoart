@@ -1,0 +1,22 @@
+{% extends 'myapp/base.html' %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="alert alert-success">
+        Your application has been submitted successfully. You can view your profile page to track your applications.
+    </div>
+    <div class="text-center">
+        <h2>Application Submitted Successfully</h2>
+        <p>Your application for the job "{{ job.title }}" has been submitted.</p>
+        <p>We will notify the employer. Meanwhile, you can send an email directly to the employer.</p>
+        
+        <div class="mt-4">
+            {% if job.contact_email %}
+                <a href="mailto:{{ job.contact_email }}" class="btn btn-primary">Contact Employer</a>
+            {% endif %}
+            <a href="{% url 'job_list' %}" class="btn btn-secondary">Back to Job List</a>
+            <a href="{% url 'profile' %}" class="btn btn-info">View My Profile</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Logged Out - Job Portal{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-success">Logged Out Successfully</h2>
+                        <p class="text-muted">You have been logged out of your account.</p>
+                    </div>
+
+                    <div class="text-center">
+                        <a href="{% url 'login' %}" class="btn btn-primary btn-lg me-3"
+                           style="border-radius: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                            <i class="fas fa-sign-in-alt me-2"></i>Log In Again
+                        </a>
+                        <a href="{% url 'home' %}" class="btn btn-outline-secondary btn-lg"
+                           style="border-radius: 10px;">
+                            <i class="fas fa-home me-2"></i>Go to Home
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+.card {
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.4);
+}
+
+.text-success {
+    color: #28a745 !important;
+}
+
+/* Animation for elements */
+.card, .btn {
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+</style>
+{% endblock %}

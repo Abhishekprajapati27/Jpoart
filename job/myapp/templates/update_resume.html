@@ -1,0 +1,297 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block content %}
+<div class="container-fluid mt-4 linkedin-profile-container" style="max-width: 100%;">
+  <div class="row">
+    <!-- Profile Header -->
+    <div class="col-12">
+      <div class="profile-header linkedin-header">
+        <div class="profile-avatar">
+          {% if job_seeker.profile_picture %}
+            <img src="{{ job_seeker.profile_picture.url }}" alt="Profile Picture" class="avatar-img">
+          {% else %}
+            <div class="default-avatar">
+              <svg width="120" height="120" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="60" cy="60" r="60" fill="#0073b1"/>
+                <circle cx="60" cy="45" r="20" fill="#ffffff"/>
+                <path d="M30 95 Q30 75 60 75 Q90 75 90 95" fill="#ffffff"/>
+              </svg>
+            </div>
+          {% endif %}
+        </div>
+        <div class="profile-info">
+          <h1 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h1>
+          <p class="profile-email">{{ user.email }}</p>
+          <p class="profile-location">{{ job_seeker.location|default:"Location not set" }}</p>
+          <p class="profile-phone">{{ job_seeker.phone|default:"Phone not set" }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row mt-4">
+    <!-- Left Column -->
+    <div class="col-12">
+      {% if not view_only %}
+      <div class="edit-form-container linkedin-form-container" style="max-width: 100%;">
+        <h4>Edit Profile</h4>
+        <form method="post" enctype="multipart/form-data" class="linkedin-form">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="{{ form.about.id_for_label }}">About</label>
+            {{ form.about }}
+            {% if form.about.errors %}
+            <ul class="errorlist">
+              {% for error in form.about.errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.profile_picture.id_for_label }}">Profile Picture</label>
+            {{ form.profile_picture }}
+            {% if form.profile_picture.errors %}
+            <ul class="errorlist">
+              {% for error in form.profile_picture.errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.phone.id_for_label }}">Phone</label>
+            {{ form.phone }}
+            {% if form.phone.errors %}
+            <ul class="errorlist">
+              {% for error in form.phone.errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.location.id_for_label }}">Location</label>
+            {{ form.location }}
+            {% if form.location.errors %}
+            <ul class="errorlist">
+              {% for error in form.location.errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.skills.id_for_label }}">Skills</label>
+            {{ form.skills }}
+            {% if form.skills.errors %}
+            <ul class="errorlist">
+              {% for error in form.skills.errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.experience.id_for_label }}">Experience</label>
+            {{ form.experience }}
+            {% if form.experience.errors %}
+            <ul class="errorlist">
+              {% for error in form.experience.errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.education.id_for_label }}">Education</label>
+            {{ form.education }}
+            {% if form.education.errors %}
+            <ul class="errorlist">
+              {% for error in form.education.errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+          </div>
+          <div class="form-group">
+            <label for="{{ form.resume.id_for_label }}">Resume</label>
+            {{ form.resume }}
+            {% if form.resume.errors %}
+            <ul class="errorlist">
+              {% for error in form.resume.errors %}
+              <li>{{ error }}</li>
+              {% endfor %}
+            </ul>
+            {% endif %}
+            <p id="resumeFileNameDisplay" style="margin-top: 0.5rem;">
+              {% if job_seeker.resume %}
+                Current: <a href="{{ job_seeker.resume.url }}" target="_blank">{{ job_seeker.resume.name }}</a>
+              {% else %}
+                No resume uploaded yet.
+              {% endif %}
+            </p>
+          </div>
+          <!-- Additional Features -->
+          <div class="form-group">
+            <label for="linkedin_url">LinkedIn URL</label>
+            <input type="url" name="linkedin_url" id="linkedin_url" class="form-control" placeholder="https://linkedin.com/in/yourprofile" value="{{ job_seeker.linkedin_url|default:'' }}">
+          </div>
+          <div class="form-group">
+            <label for="github_url">GitHub URL</label>
+            <input type="url" name="github_url" id="github_url" class="form-control" placeholder="https://github.com/yourprofile" value="{{ job_seeker.github_url|default:'' }}">
+          </div>
+          <button type="submit" class="btn btn-primary linkedin-btn">Save Changes</button>
+        </form>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+</div>
+
+<style>
+.linkedin-profile-container {
+  background: #f3f2ef;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.linkedin-header {
+  background: white;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  display: flex;
+  align-items: center;
+  margin-bottom: 2rem;
+}
+
+.avatar-img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-right: 2rem;
+  border: 4px solid #0073b1;
+}
+
+.profile-name {
+  color: #0073b1;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.profile-email, .profile-location, .profile-phone {
+  margin-bottom: 0.25rem;
+  color: #666;
+}
+
+.linkedin-section {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  margin-bottom: 1.5rem;
+}
+
+.section-title {
+  color: #0073b1;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  border-bottom: 2px solid #0073b1;
+  padding-bottom: 0.5rem;
+}
+
+.linkedin-form-container {
+  background: white;
+  padding: 1.5rem;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  position: sticky;
+  top: 2rem;
+  transition: box-shadow 0.3s ease;
+  max-width: 100%;
+  width: 100%;
+}
+
+.linkedin-form-container:hover {
+  box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+}
+
+.linkedin-form .form-group {
+  margin-bottom: 1rem;
+}
+
+.linkedin-form label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: #333;
+}
+
+.linkedin-form input, .linkedin-form textarea {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 0.9rem;
+  transition: border-color 0.3s ease;
+}
+
+.linkedin-form input:focus, .linkedin-form textarea:focus {
+  border-color: #0073b1;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0,115,177,0.5);
+}
+
+.linkedin-form textarea {
+  resize: vertical;
+  min-height: 80px;
+}
+
+.linkedin-btn {
+  background-color: #0073b1;
+  border: none;
+  color: white;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 5px;
+  cursor: pointer;
+  width: 100%;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.linkedin-btn:hover {
+  background-color: #005582;
+  transform: translateY(-2px);
+}
+
+.errorlist {
+  color: #d93025;
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+  list-style: none;
+  padding: 0;
+}
+
+.default-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  margin-right: 2rem;
+  border: 4px solid #0073b1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f8f9fa;
+}
+
+.default-avatar svg {
+  width: 80px;
+  height: 80px;
+}
+</style>
+{% endblock %}

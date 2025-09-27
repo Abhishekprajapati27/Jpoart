@@ -1,0 +1,150 @@
+{% extends 'base.html' %}
+{% block title %}Login - Job Portal{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-5">
+            <div class="card border-0 shadow-lg">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-primary">Welcome Back</h2>
+                        <p class="text-muted">Sign in to your account</p>
+                    </div>
+
+                    {% if form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <i class="fas fa-exclamation-circle me-2"></i>
+                        {% for error in form.non_field_errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% endif %}
+
+                    <form method="post">
+                        {% csrf_token %}
+                        
+                        <div class="mb-3">
+                            <label for="id_username" class="form-label fw-semibold">
+                                <i class="fas fa-envelope me-2"></i>Email
+                            </label>
+                            <input type="email" name="username" class="form-control form-control-lg" 
+                                   id="id_username" placeholder="Enter your email" required
+                                   style="border-radius: 10px; border: 2px solid #e9ecef;">
+                        </div>
+
+                        <div class="mb-4">
+                            <label for="id_password" class="form-label fw-semibold">
+                                <i class="fas fa-lock me-2"></i>Password
+                            </label>
+                            <input type="password" name="password" class="form-control form-control-lg" 
+                                   id="id_password" placeholder="Enter your password" required
+                                   style="border-radius: 10px; border: 2px solid #e9ecef;">
+                        </div>
+
+                        <button type="submit" class="btn btn-primary btn-lg w-100 mb-3" 
+                                style="border-radius: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                            <i class="fas fa-sign-in-alt me-2"></i>Sign In
+                        </button>
+
+                        <div class="text-center">
+                            <p class="text-muted mb-0">
+                                Don't have an account? 
+                                <a href="{% url 'signup' %}" class="text-primary text-decoration-none fw-semibold">
+                                    Sign up here
+                                </a>
+                            </p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add Font Awesome for icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+<style>
+.card {
+    border-radius: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.15) !important;
+}
+
+.form-control {
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    border-color: #667eea !important;
+    box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+}
+
+.alert {
+    border-radius: 10px;
+    border: none;
+}
+
+.text-primary {
+    color: #667eea !important;
+}
+
+.form-label {
+    color: #495057;
+}
+
+/* Animation for form elements */
+.form-control, .btn {
+    animation: fadeInUp 0.6s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Staggered animation for form elements */
+.form-control:nth-child(1) { animation-delay: 0.1s; }
+.form-control:nth-child(2) { animation-delay: 0.2s; }
+.btn { animation-delay: 0.3s; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add focus effects to form inputs
+    const inputs = document.querySelectorAll('.form-control');
+    inputs.forEach(input => {
+        input.addEventListener('focus', function() {
+            this.style.transform = 'scale(1.02)';
+            this.style.boxShadow = '0 5px 15px rgba(102, 126, 234, 0.2)';
+        });
+        
+        input.addEventListener('blur', function() {
+            this.style.transform = 'scale(1)';
+            this.style.boxShadow = 'none';
+        });
+    });
+});
+</script>
+{% endblock %}

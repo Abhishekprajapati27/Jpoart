@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+{% block title %}Applicant Details{% endblock %}
+{% block content %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card">
+                <div class="card-header">
+                    <h2>Applicant Details</h2>
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">{{ application.job_seeker.user.first_name }} {{ application.job_seeker.user.last_name }}</h5>
+                    <p class="card-text"><strong>Applying for:</strong> {{ application.job.title }}</p>
+                    <p class="card-text"><strong>Email:</strong> {{ application.job_seeker.user.email }}</p>
+                    <p class="card-text"><strong>Phone:</strong> {{ application.job_seeker.phone }}</p>
+                    <p class="card-text"><strong>Location:</strong> {{ application.job_seeker.location }}</p>
+                    <p class="card-text"><strong>Skills:</strong> {{ application.job_seeker.skills }}</p>
+                    <p class="card-text"><strong>Experience:</strong> {{ application.job_seeker.experience }}</p>
+                    <p class="card-text"><strong>Education:</strong> {{ application.job_seeker.education }}</p>
+                    <p class="card-text"><strong>Cover Letter:</strong> {{ application.cover_letter }}</p>
+                    {% if application.job_seeker.resume %}
+                        <a href="{{ application.job_seeker.resume.url }}" class="btn btn-primary" target="_blank">View Resume</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
