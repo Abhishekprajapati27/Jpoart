@@ -49,7 +49,6 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'myapp',
-    'sslserver',  # Only for local development, remove in production
 ]
 
 AUTH_USER_MODEL = 'myapp.CustomUser'
