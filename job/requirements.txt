@@ -5,3 +5,4 @@ python-decouple
 django-sslserver
 gunicorn==21.2.0
 dj-database-url==2.1.0
+goole-generativeal
