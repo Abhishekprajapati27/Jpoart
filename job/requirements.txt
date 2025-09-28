@@ -1,8 +1,7 @@
-Django==5.2.5
+Django==5.0.6
 psycopg2-binary==2.9.9
 Pillow==10.3.0
-python-decouple
-django-sslserver
+python-decouple==3.8
 gunicorn==21.2.0
 dj-database-url==2.1.0
-goole-generativeal
+whitenoise==6.6.0
