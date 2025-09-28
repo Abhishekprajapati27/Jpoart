@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 {% block title %}About - JPort{% endblock %}
 {% block content %}
-<div class="container py-5">
+<div class="about-section container py-5">
     <div class="row">
         <div class="col-lg-8 mx-auto">
             <h1 class="display-4 fw-bold text-center mb-4">About JPort</h1>
@@ -11,24 +11,24 @@
 
             <div class="row mb-5">
                 <div class="col-md-6">
-                    <div class="card border-0 shadow-sm mb-4">
+                    <div class="card border-0 shadow-sm mb-4 hover-lift about-card">
                         <div class="card-body text-center p-4">
                             <i class="fas fa-bullseye fa-3x text-primary mb-3"></i>
                             <h3 class="h4 fw-bold">Our Mission</h3>
                             <p class="text-muted">
-                                To create a seamless platform where job seekers and employers can connect, 
+                                To create a seamless platform where job seekers and employers can connect,
                                 making the job search process efficient and rewarding for everyone involved.
                             </p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-6">
-                    <div class="card border-0 shadow-sm mb-4">
+                    <div class="card border-0 shadow-sm mb-4 hover-lift about-card">
                         <div class="card-body text-center p-4">
-                            <i class="fas fa-eye fa-3x text-success mb-3"></i>
+                            <i class="fas fa-eye fa-3x text-primary mb-3"></i>
                             <h3 class="h4 fw-bold">Our Vision</h3>
                             <p class="text-muted">
-                                To become the leading job portal that transforms how people find meaningful work 
+                                To become the leading job portal that transforms how people find meaningful work
                                 and how companies discover exceptional talent.
                             </p>
                         </div>
@@ -42,7 +42,7 @@
                     <div class="row">
                         <div class="col-md-4 mb-3">
                             <div class="d-flex align-items-start">
-                                <i class="fas fa-rocket fa-2x text-warning me-3 mt-1"></i>
+                                <i class="fas fa-rocket fa-2x text-primary me-3 mt-1"></i>
                                 <div>
                                     <h5 class="fw-bold">Fast & Efficient</h5>
                                     <p class="text-muted mb-0">Quick job matching and application process</p>
@@ -51,7 +51,7 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <div class="d-flex align-items-start">
-                                <i class="fas fa-shield-alt fa-2x text-info me-3 mt-1"></i>
+                                <i class="fas fa-shield-alt fa-2x text-primary me-3 mt-1"></i>
                                 <div>
                                     <h5 class="fw-bold">Secure Platform</h5>
                                     <p class="text-muted mb-0">Your data and privacy are our top priority</p>
@@ -60,7 +60,7 @@
                         </div>
                         <div class="col-md-4 mb-3">
                             <div class="d-flex align-items-start">
-                                <i class="fas fa-users fa-2x text-success me-3 mt-1"></i>
+                                <i class="fas fa-users fa-2x text-primary me-3 mt-1"></i>
                                 <div>
                                     <h5 class="fw-bold">Large Community</h5>
                                     <p class="text-muted mb-0">Join thousands of professionals and companies</p>
@@ -79,7 +79,7 @@
                     <a href="{% url 'job_list' %}" class="btn btn-primary btn-lg">
                         <i class="fas fa-briefcase me-2"></i>Browse Jobs
                     </a>
-                    <a href="{% url 'post_job' %}" class="btn btn-success btn-lg">
+                    <a href="{% url 'post_job' %}" class="btn btn-primary btn-lg">
                         <i class="fas fa-plus me-2"></i>Post a Job
                     </a>
                     {% else %}
@@ -96,39 +96,4 @@
     </div>
 </div>
 
-<!-- Add Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-
-<style>
-.about-section {
-    background: var(--hero-bg);
-    color: var(--stat-text);
-    border-radius: 15px;
-    margin: -1rem;
-    padding: 4rem 0;
-}
-
-.card {
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    border-radius: 12px;
-    background: var(--card-bg);
-}
-
-.card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px var(--card-shadow);
-}
-
-.feature-icon {
-    width: 60px;
-    height: 60px;
-    background: var(--hero-bg);
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    margin: 0 auto 1.5rem;
-    color: var(--stat-text);
-}
-</style>
 {% endblock %}

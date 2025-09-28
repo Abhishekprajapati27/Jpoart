@@ -1,15 +1,15 @@
-{% extends 'base.html' %}
+ {% extends 'base.html' %}
 {% block title %}Home - Job Portal{% endblock %}
 {% block content %}
 
 <!-- Hero Section -->
-<section class="hero-section text-center py-5 mb-5" style="background: var(--hero-bg); color: var(--stat-text); border-radius: 15px;">
+<section class="hero-section text-center py-5 mb-5">
     <div class="container">
         <div class="row justify-content-center">
             <div class="col-lg-8">
                 <h1 class="display-4 fw-bold mb-4 animate__animated animate__fadeInDown">Find Your Dream Job Today</h1>
                 <p class="lead mb-4 animate__animated animate__fadeInUp">Connect with top employers and discover opportunities that match your skills and aspirations</p>
-                
+
                 <!-- Search Form -->
                 <form class="d-flex justify-content-center mt-4 animate__animated animate__fadeIn" method="get" action="{% url 'job_list' %}">
                     <div class="input-group input-group-lg" style="max-width: 600px;">
@@ -19,7 +19,7 @@
                         </button>
                     </div>
                 </form>
-                
+
                 <!-- Quick Stats -->
                 <div class="row mt-5 animate__animated animate__fadeInUp">
                     <div class="col-md-4">
@@ -70,7 +70,7 @@
 </section>
 
 <!-- Call to Action -->
-<section class="cta-section py-5 mb-5" style="background: var(--cta-bg); border-radius: 15px;">
+<section class="cta-section py-5 mb-5">
     <div class="container text-center">
         <h2 class="fw-bold mb-4">Ready to Start Your Journey?</h2>
         <p class="lead mb-4">Join thousands of professionals who found their dream job through our platform</p>
@@ -123,29 +123,6 @@
                 </div>
             </div>
             {% endfor %}
-<script>
-function timeSince(date) {
-    const seconds = Math.floor((new Date() - new Date(date)) / 1000);
-    let interval = Math.floor(seconds / 31536000);
-    if (interval >= 1) return interval + " year" + (interval > 1 ? "s" : "") + " ago";
-    interval = Math.floor(seconds / 2592000);
-    if (interval >= 1) return interval + " month" + (interval > 1 ? "s" : "") + " ago";
-    interval = Math.floor(seconds / 86400);
-    if (interval >= 1) return interval + " day" + (interval > 1 ? "s" : "") + " ago";
-    interval = Math.floor(seconds / 3600);
-    if (interval >= 1) return interval + " hour" + (interval > 1 ? "s" : "") + " ago";
-    interval = Math.floor(seconds / 60);
-    if (interval >= 1) return interval + " minute" + (interval > 1 ? "s" : "") + " ago";
-    return "Just now";
-}
-
-document.addEventListener('DOMContentLoaded', function() {
-    document.querySelectorAll('small[data-created-at]').forEach(function(elem) {
-        const dateStr = elem.getAttribute('data-created-at');
-        elem.textContent = timeSince(dateStr);
-    });
-});
-</script>
         </div>
         <div class="text-center mt-4">
             <a href="{% url 'job_list' %}" class="btn btn-primary">
@@ -154,137 +131,5 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
     </div>
 </section>
-
-<!-- Add Font Awesome for icons -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-<!-- Add Animate.css for animations -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
-
-<style>
-.hero-section {
-    margin-top: -1rem;
-    padding: 4rem 0;
-}
-
-.category-card, .job-card {
-    transition: all 0.3s ease;
-    border-radius: 12px;
-    background: var(--category-card-bg);
-}
-
-.hover-lift:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 25px rgba(0,0,0,0.15);
-}
-
-.stat-item {
-    padding: 1rem;
-}
-
-.stat-item h3 {
-    color: var(--stat-text);
-    text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
-}
-
-.category-icon {
-    transition: transform 0.3s ease;
-}
-
-.category-card:hover .category-icon {
-    transform: scale(1.1);
-}
-
-.cta-section {
-    background: var(--cta-bg);
-    color: var(--stat-text);
-}
-
-.cta-section .btn {
-    border-radius: 25px;
-    padding: 12px 30px;
-    font-weight: 600;
-}
-</style>
-
-<script>
-// Add some interactive animations
-document.addEventListener('DOMContentLoaded', function() {
-    // Animate stats counting
-    const stats = document.querySelectorAll('.stat-item h3');
-    stats.forEach(stat => {
-        const target = parseInt(stat.textContent);
-        let current = 0;
-        const increment = target / 50;
-        
-        const timer = setInterval(() => {
-            current += increment;
-            if (current >= target) {
-                stat.textContent = target + '+';
-                clearInterval(timer);
-            } else {
-                stat.textContent = Math.floor(current) + '+';
-            }
-        }, 20);
-    });
-    
-    // Add scroll animations
-    const observerOptions = {
-        threshold: 0.1,
-        rootMargin: '0px 0px -50px 0px'
-    };
-    
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                entry.target.style.opacity = '1';
-                entry.target.style.transform = 'translateY(0)';
-            }
-        });
-    }, observerOptions);
-    
-    // Observe all cards for animation
-    document.querySelectorAll('.category-card, .job-card').forEach(card => {
-        card.style.opacity = '0';
-        card.style.transform = 'translateY(20px)';
-        card.style.transition = 'all 0.6s ease';
-        observer.observe(card);
-    });
-});
-</script>
-
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    async function fetchCategories() {
-        try {
-            const response = await fetch("{% url 'categories_api' %}");
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
-            const categories = await response.json();
-            updateCategories(categories);
-        } catch (error) {
-            console.error('Error fetching categories:', error);
-        }
-    }
-
-    function updateCategories(categories) {
-        categories.forEach(category => {
-            const container = document.querySelector(`.category-card-container[data-category-id='${category.id}']`);
-            if (container) {
-                const jobCountElem = container.querySelector('.category-job-count');
-                if (jobCountElem) {
-                    jobCountElem.textContent = `${category.job_count} jobs available`;
-                }
-            }
-        });
-    }
-
-    // Initial fetch
-    fetchCategories();
-
-    // Poll every 30 seconds
-    setInterval(fetchCategories, 30000);
-});
-</script>
 
 {% endblock %}

@@ -18,42 +18,38 @@
                         
                         <!-- Job Title -->
                         <div class="mb-4">
-                            <label class="form-label fw-semibold">
+                            <label class="form-label">
                                 <i class="fas fa-briefcase me-2"></i>Job Title *
                             </label>
-                            <input type="text" name="title" class="form-control form-control-lg" 
-                                   placeholder="e.g., Senior Software Engineer" required
-                                   style="border-radius: 10px; border: 2px solid #e9ecef;">
+                            <input type="text" name="title" class="form-control form-control-lg"
+                                   placeholder="e.g., Senior Software Engineer" required>
                         </div>
 
                         <!-- Company Information -->
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">
+                                <label class="form-label">
                                     <i class="fas fa-building me-2"></i>Company Name *
                                 </label>
-                                <input type="text" name="company" class="form-control" 
-                                       placeholder="Your company name" required
-                                       style="border-radius: 10px; border: 2px solid #e9ecef;">
+                                <input type="text" name="company" class="form-control"
+                                       placeholder="Your company name" required>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">
+                                <label class="form-label">
                                     <i class="fas fa-map-marker-alt me-2"></i>Location *
                                 </label>
-                                <input type="text" name="location" class="form-control" 
-                                       placeholder="e.g., New York, NY or Remote" required
-                                       style="border-radius: 10px; border: 2px solid #e9ecef;">
+                                <input type="text" name="location" class="form-control"
+                                       placeholder="e.g., New York, NY or Remote" required>
                             </div>
                         </div>
 
                         <!-- Job Details -->
                         <div class="row mb-4">
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">
+                                <label class="form-label">
                                     <i class="fas fa-clock me-2"></i>Job Type *
                                 </label>
-                                <select name="job_type" class="form-select" required
-                                        style="border-radius: 10px; border: 2px solid #e9ecef;">
+                                <select name="job_type" class="form-select" required>
                                     <option value="">Select job type</option>
                                     <option value="full_time">Full Time</option>
                                     <option value="part_time">Part Time</option>
@@ -63,22 +59,20 @@
                                 </select>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label fw-semibold">
+                                <label class="form-label">
                                     <i class="fas fa-dollar-sign me-2"></i>Salary Range
                                 </label>
-                                <input type="text" name="salary" class="form-control" 
-                                       placeholder="e.g., $80,000 - $100,000"
-                                       style="border-radius: 10px; border: 2px solid #e9ecef;">
+                                <input type="text" name="salary" class="form-control"
+                                       placeholder="e.g., $80,000 - $100,000">
                             </div>
                         </div>
 
                         <!-- Category -->
                         <div class="mb-4">
-                            <label class="form-label fw-semibold">
+                            <label class="form-label">
                                 <i class="fas fa-tag me-2"></i>Category *
                             </label>
-                            <select name="category" class="form-select" required
-                                    style="border-radius: 10px; border: 2px solid #e9ecef;">
+                            <select name="category" class="form-select" required>
                                 <option value="">Select category</option>
                                 <option value="it">IT & Software</option>
                                 <option value="marketing">Marketing</option>
@@ -93,41 +87,37 @@
 
                         <!-- Application Deadline -->
                         <div class="mb-4">
-                            <label class="form-label fw-semibold">
+                            <label class="form-label">
                                 <i class="fas fa-calendar me-2"></i>Application Deadline *
                             </label>
-                            <input type="date" name="deadline" class="form-control" required
-                                   style="border-radius: 10px; border: 2px solid #e9ecef;">
+                            <input type="date" name="deadline" class="form-control" required>
                         </div>
 
                         <!-- Job Description -->
                         <div class="mb-4">
-                            <label class="form-label fw-semibold">
+                            <label class="form-label">
                                 <i class="fas fa-file-alt me-2"></i>Job Description *
                             </label>
-                            <textarea name="description" class="form-control" rows="5" 
-                                      placeholder="Provide a detailed description of the job role, responsibilities, and what a typical day looks like." required
-                                      style="border-radius: 10px; border: 2px solid #e9ecef;"></textarea>
+                            <textarea name="description" class="form-control" rows="5"
+                                      placeholder="Provide a detailed description of the job role, responsibilities, and what a typical day looks like." required></textarea>
                         </div>
 
                         <!-- Job Requirements -->
                         <div class="mb-4">
-                            <label class="form-label fw-semibold">
+                            <label class="form-label">
                                 <i class="fas fa-tasks me-2"></i>Requirements *
                             </label>
-                            <textarea name="requirements" class="form-control" rows="5" 
-                                      placeholder="List the essential skills, qualifications, and experience required for this role." required
-                                      style="border-radius: 10px; border: 2px solid #e9ecef;"></textarea>
+                            <textarea name="requirements" class="form-control" rows="5"
+                                      placeholder="List the essential skills, qualifications, and experience required for this role." required></textarea>
                         </div>
 
                         <!-- Contact Email -->
                         <div class="mb-4">
-                            <label class="form-label fw-semibold">
+                            <label class="form-label">
                                 <i class="fas fa-envelope me-2"></i>Contact Email
                             </label>
-                            <input type="email" name="contact_email" class="form-control" 
-                                   placeholder="e.g., careers@example.com"
-                                   style="border-radius: 10px; border: 2px solid #e9ecef;">
+                            <input type="email" name="contact_email" class="form-control"
+                                   placeholder="e.g., careers@example.com">
                         </div>
 
                         <!-- Error Message -->
@@ -139,8 +129,7 @@
                         {% endif %}
 
                         <div class="d-grid">
-                            <button type="submit" class="btn btn-primary btn-lg py-3" 
-                                    style="border-radius: 10px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border: none;">
+                            <button type="submit" class="btn btn-primary btn-lg py-3">
                                 <i class="fas fa-paper-plane me-2"></i>Post Job
                             </button>
                         </div>

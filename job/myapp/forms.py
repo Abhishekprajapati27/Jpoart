@@ -8,12 +8,16 @@ CustomUser = get_user_model()
 class CustomUserCreationForm(UserCreationForm):
     class Meta:
         model = CustomUser
-        fields = ('email', 'username', 'first_name', 'last_name')
+        fields = ('email', 'username', 'first_name', 'last_name', 'password1', 'password2')
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['email'].required = True
         self.fields['email'].error_messages = {'required': 'Email is required.'}
+        self.fields['password1'].widget.attrs.update({'placeholder': 'Password'})
+        self.fields['password2'].widget.attrs.update({'placeholder': 'Confirm Password'})
+        self.fields['password1'].help_text = None
+        self.fields['password2'].help_text = None
 
 class CustomAuthenticationForm(AuthenticationForm):
     username = forms.EmailField(

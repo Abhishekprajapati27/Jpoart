@@ -1,7 +1,20 @@
-# Dark Theme UI Implementation TODO
+# TODO: Implement New Professional Blue-Gray Color Scheme
 
-- [x] Update style.css: Add dark-specific CSS variables for inline elements (e.g., --hero-bg-dark, --cta-bg-dark); remove light mode :root variables since only dark UI is needed; ensure full dark coverage.
-- [x] Update base.html: Change footer classes to use CSS variables instead of hardcoded 'bg-dark'.
-- [x] Update home.html: Refactor inline styles to dark equivalents (e.g., dark gradients for hero-section and cta-section, dark card backgrounds).
-- [ ] Check and update other templates (e.g., dashboard.html, job_list.html) for any inline styles causing light elements.
-- [ ] Test dark UI: Run Django server and verify consistent dark theme on key pages using browser_action.
+## Overview
+Update the JPORT job portal from dark teal/cyan theme to a clean, professional light-blue-gray palette for better usability and trust in a job site context.
+
+## Tasks
+- [ ] Update job/myapp/static/style.css with new CSS variables and color scheme
+- [ ] Update job/myapp/static/dashboard-professional.css to align with new palette
+- [ ] Run collectstatic to update static files
+- [ ] Test dashboard and home pages for color consistency and responsiveness
+- [ ] Verify animations are subtle and professional
+
+## Color Palette
+- Primary: #2563eb (blue-600)
+- Secondary: #64748b (slate-500)
+- Accent/Success: #10b981 (emerald-500)
+- Background: #f8fafc (slate-50)
+- Text Primary: #1e293b (slate-800)
+- Text Secondary: #64748b (slate-500)
+- Borders: #e2e8f0 (slate-200)
