@@ -29,6 +29,11 @@ DEBUG = config('DEBUG', default=False, cast=bool)
 # Allow all hosts (for testing/deployment convenience)
 ALLOWED_HOSTS = ['*']
 
+# Disable HTTPS redirect and secure cookies for local development
+SECURE_SSL_REDIRECT = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
+
 # ----------------------------
 # Installed apps
 # ----------------------------
@@ -52,7 +57,7 @@ AUTHENTICATION_BACKENDS = [
 # Middleware
 # ----------------------------
 MIDDLEWARE = [
-    'django.middleware.security.SecurityMiddleware',
+    # Removed 'django.middleware.security.SecurityMiddleware' to disable HTTPS redirect
     'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files in production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -89,15 +94,25 @@ WSGI_APPLICATION = 'job.wsgi.application'
 # ----------------------------
 # Database (PostgreSQL for Render)
 # ----------------------------
-DATABASES = {
-    'default': dj_database_url.config(
-        default=config(
-            'DATABASE_URL',
-            default='postgresql://jport_user:a1JvATjm4Hm6NlpjxyhvO88l2OxJ662P@dpg-d3ciem6mcj7s73dlbggg-a/jport'
-        ),
-        conn_max_age=600,
-    )
-}
+import sys
+
+if 'test' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
+else:
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=config(
+                'DATABASE_URL',
+                default='sqlite:///db.sqlite3'
+            ),
+            conn_max_age=600,
+        )
+    }
 
 # ----------------------------
 # Password validation
@@ -128,7 +143,10 @@ if os.path.isdir(static_dir):
     STATICFILES_DIRS.append(static_dir)
 
 # Enable WhiteNoise for serving static files in production
-STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+if 'test' in sys.argv:
+    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
+else:
+    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # ----------------------------
 # Media files

@@ -1,0 +1,32 @@
+Steps to resolve the import errors by setting up the Python environment:
+
+1. Create a Python virtual environment:
+   - Open a terminal in the project root directory (where requirements.txt is located).
+   - Run the command:
+     python -m venv venv
+
+2. Activate the virtual environment:
+   - On Windows (cmd):
+     venv\Scripts\activate
+   - On Windows (PowerShell):
+     .\venv\Scripts\Activate.ps1
+   - On macOS/Linux:
+     source venv/bin/activate
+
+3. Install the required dependencies:
+   - Run the command:
+     pip install -r requirements.txt
+
+4. Configure VSCode to use the virtual environment interpreter:
+   - Open the Command Palette (Ctrl+Shift+P).
+   - Search for "Python: Select Interpreter".
+   - Choose the interpreter from the created virtual environment (should show path to venv).
+
+5. Restart VSCode or reload the window:
+   - This ensures the environment changes take effect.
+
+6. Verify:
+   - Open the files with import errors.
+   - The errors should be resolved if the environment is set up correctly.
+
+Following these steps will fix the unresolved import errors for dj_database_url, decouple, and Django modules.

@@ -406,13 +406,8 @@ def apply_job(request, job_id):
                 except Exception as e:
                     logger.error(f"Failed to send detailed email notification: {e}")
 
-            # Render success page with link to user's profile for employer and user
-            return render(request, 'apply_job_success.html', {
-                'company_email': company_email,
-                'job': job,
-                'profile_url': reverse('view_profile', args=[user.pk]),
-                'applicant_name': full_name,
-            })
+            # Redirect to dashboard after successful application
+            return redirect('dashboard')
     else:
         form = JobApplicationForm()
 
