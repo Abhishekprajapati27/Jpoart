@@ -1,20 +1,15 @@
-# TODO: Implement New Professional Blue-Gray Color Scheme
+# TODO: Remove Heroku/Render Configs and Prepare for Local Django Server
 
-## Overview
-Update the JPORT job portal from dark teal/cyan theme to a clean, professional light-blue-gray palette for better usability and trust in a job site context.
+## Edit Files
+- [x] Edit `job/job/settings.py`: Remove Heroku/Render imports and configs, simplify DB to local SQLite, remove whitenoise middleware and storage, clean up production conditionals.
+- [x] Edit `job/requirements.txt`: Remove `psycopg2-binary`, `gunicorn`, `dj-database-url`; optionally remove `whitenoise`.
+- [x] Delete `job/Procfile` (Heroku process file).
+- [x] Delete `job/runtime.txt` (Heroku Python version file).
 
-## Tasks
-- [ ] Update job/myapp/static/style.css with new CSS variables and color scheme
-- [ ] Update job/myapp/static/dashboard-professional.css to align with new palette
-- [ ] Run collectstatic to update static files
-- [ ] Test dashboard and home pages for color consistency and responsiveness
-- [ ] Verify animations are subtle and professional
-
-## Color Palette
-- Primary: #2563eb (blue-600)
-- Secondary: #64748b (slate-500)
-- Accent/Success: #10b981 (emerald-500)
-- Background: #f8fafc (slate-50)
-- Text Primary: #1e293b (slate-800)
-- Text Secondary: #64748b (slate-500)
-- Borders: #e2e8f0 (slate-200)
+## Post-Edit Steps
+- [x] Run `pip install -r requirements.txt` to update dependencies. (Note: Pillow install failed, but Django and others are fine; app should work without it for now.)
+- [x] Run `python manage.py makemigrations` and `python manage.py migrate` to set up local SQLite DB.
+- [x] Run `python manage.py collectstatic --noinput` (if keeping whitenoise; optional).
+- [x] Start local server: `python manage.py runserver` and test at http://127.0.0.1:8000/.
+- [ ] Verify no errors: Check DB connections, static/media loading, app functionality (e.g., login, job listing). (Server started successfully; some HTTPS requests logged but that's normal for dev server.)
+- [ ] If needed, create `.env` file with `SECRET_KEY=your-secret-key` and `DEBUG=True`.

@@ -12,7 +12,6 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 
 from pathlib import Path
 import os
-import dj_database_url
 from decouple import config
 
 # ----------------------------
@@ -24,15 +23,20 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Security
 # ----------------------------
 SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key')
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default=True, cast=bool)
 
 # Allow all hosts (for testing/deployment convenience)
 ALLOWED_HOSTS = ['*']
 
-# Disable HTTPS redirect and secure cookies for local development
-SECURE_SSL_REDIRECT = False
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
+# Enable HTTPS redirect and secure cookies for production
+if not DEBUG:
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+else:
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
 
 # ----------------------------
 # Installed apps
@@ -44,6 +48,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sslserver',
     'myapp',
 ]
 
@@ -57,8 +62,7 @@ AUTHENTICATION_BACKENDS = [
 # Middleware
 # ----------------------------
 MIDDLEWARE = [
-    # Removed 'django.middleware.security.SecurityMiddleware' to disable HTTPS redirect
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files in production
+    'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -92,27 +96,14 @@ TEMPLATES = [
 WSGI_APPLICATION = 'job.wsgi.application'
 
 # ----------------------------
-# Database (PostgreSQL for Render)
+# Database (Local SQLite)
 # ----------------------------
-import sys
-
-if 'test' in sys.argv:
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': BASE_DIR / 'db.sqlite3',
-        }
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': BASE_DIR / 'db.sqlite3',
     }
-else:
-    DATABASES = {
-        'default': dj_database_url.config(
-            default=config(
-                'DATABASE_URL',
-                default='sqlite:///db.sqlite3'
-            ),
-            conn_max_age=600,
-        )
-    }
+}
 
 # ----------------------------
 # Password validation
@@ -142,11 +133,8 @@ static_dir = os.path.join(BASE_DIR, 'myapp', 'static')
 if os.path.isdir(static_dir):
     STATICFILES_DIRS.append(static_dir)
 
-# Enable WhiteNoise for serving static files in production
-if 'test' in sys.argv:
-    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-else:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Static files storage
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
 
 # ----------------------------
 # Media files
@@ -168,3 +156,5 @@ LOGIN_URL = '/login/'
 # Email backend (console for dev)
 # ----------------------------
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
