@@ -126,7 +126,6 @@ else:
             conn_max_age=conn_max_age,
         )
     }
-}
 
 # ----------------------------
 # Password validation
