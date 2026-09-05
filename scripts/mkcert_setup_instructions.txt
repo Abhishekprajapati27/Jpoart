@@ -1,0 +1,38 @@
+Step-by-step instructions to fix "Your connection is not private" SSL error on local Django server:
+
+1. Install mkcert on Windows:
+   - Download mkcert from the official GitHub releases page:
+     https://github.com/FiloSottile/mkcert/releases
+   - Choose the Windows executable (mkcert-vX.X.X-windows-amd64.exe).
+   - Rename the downloaded file to mkcert.exe.
+   - Move mkcert.exe to a folder included in your system PATH, e.g., C:\Windows\System32 or add its folder to PATH.
+   - Open a new Command Prompt or PowerShell window and run:
+     mkcert -install
+     This installs a local CA in your system and browser trust stores.
+
+2. Generate trusted SSL certificates for localhost and 127.0.0.1:
+   - In your project directory, run:
+     mkcert localhost 127.0.0.1
+   - This will generate two files:
+     - localhost+127.0.0.1.pem (certificate)
+     - localhost+127.0.0.1-key.pem (private key)
+
+3. Configure Django development server to use these certificates:
+   - Since your project uses 'sslserver' app, run the server with:
+     python manage.py runsslserver --certificate localhost+127.0.0.1.pem --key localhost+127.0.0.1-key.pem
+   - This will start the server with HTTPS using the trusted certificates.
+
+4. If you use gunicorn locally, configure it to use the certificates:
+   - Run gunicorn with:
+     gunicorn job.wsgi --certfile=localhost+127.0.0.1.pem --keyfile=localhost+127.0.0.1-key.pem
+
+5. Access your site at https://localhost:8000 or https://127.0.0.1:8000 without browser warnings.
+
+6. If you face any issues, clear your browser cache or restart the browser.
+
+Testing:
+- After setup, verify that the site loads over HTTPS without security warnings.
+- Test key pages and forms to ensure HTTPS works correctly.
+- Let me know if you want thorough testing of all pages and features.
+
+This setup will fix the SSL certificate error on your local development environment.

@@ -458,13 +458,16 @@
                 <small class="text-muted">
                   <i class="fas fa-calendar"></i> {{ notification.job_application.applied_at|date:"F j, Y, g:i a" }}
                 </small>
-                {% if notification.job_application.job_seeker.user.id %}
-                <div class="mt-2">
-                  <a href="{% url 'view_profile' notification.job_application.job_seeker.user.id %}" class="btn btn-primary btn-sm">
-                    <i class="fas fa-user"></i> View Applicant Profile
+                <div class="mt-2 d-flex gap-2">
+                  <a href="{% url 'view_applicant' notification.job_application.id %}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-file-alt"></i> View Application
                   </a>
+                  {% if notification.job_application.job_seeker.user.pk %}
+                  <a href="{% url 'view_profile' notification.job_application.job_seeker.user.pk %}" class="btn btn-primary btn-sm">
+                    <i class="fas fa-user"></i> View Profile
+                  </a>
+                  {% endif %}
                 </div>
-                {% endif %}
               </div>
             </div>
             {% endfor %}

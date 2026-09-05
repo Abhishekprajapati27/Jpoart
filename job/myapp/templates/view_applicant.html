@@ -18,9 +18,19 @@
                     <p class="card-text"><strong>Experience:</strong> {{ application.job_seeker.experience }}</p>
                     <p class="card-text"><strong>Education:</strong> {{ application.job_seeker.education }}</p>
                     <p class="card-text"><strong>Cover Letter:</strong> {{ application.cover_letter }}</p>
-                    {% if application.job_seeker.resume %}
-                        <a href="{{ application.job_seeker.resume.url }}" class="btn btn-primary" target="_blank">View Resume</a>
+                    <div class="mt-3">
+                    {% if application.resume %}
+                        <a href="{{ application.resume.url }}" class="btn btn-primary" target="_blank"><i class="fas fa-file-download me-1"></i>View Application Resume</a>
+                    {% elif application.job_seeker.resume %}
+                        <a href="{{ application.job_seeker.resume.url }}" class="btn btn-primary" target="_blank"><i class="fas fa-file-download me-1"></i>View Profile Resume</a>
+                    {% else %}
+                        <span class="text-muted">No resume attached.</span>
                     {% endif %}
+                    {% if application.job_seeker.user.pk %}
+                        <a href="{% url 'view_profile' application.job_seeker.user.pk %}" class="btn btn-outline-primary ms-2"><i class="fas fa-user me-1"></i>Full Profile</a>
+                    {% endif %}
+                    <a href="{% url 'dashboard' %}" class="btn btn-secondary ms-2">Back to Dashboard</a>
+                    </div>
                 </div>
             </div>
         </div>

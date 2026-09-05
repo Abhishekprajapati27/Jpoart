@@ -24,15 +24,28 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Security
 # ----------------------------
 SECRET_KEY = config('SECRET_KEY', default='unsafe-secret-key')
-DEBUG = config('DEBUG', default=False, cast=bool)
+DEBUG = config('DEBUG', default=True, cast=bool)
 
-# Allow all hosts (for testing/deployment convenience)
-ALLOWED_HOSTS = ['*']
+# Allow hosts from environment, defaults to all for ease of setup
+ALLOWED_HOSTS = [h.strip() for h in config('ALLOWED_HOSTS', default='*').split(',') if h.strip()]
 
-# Disable HTTPS redirect and secure cookies for local development
-SECURE_SSL_REDIRECT = False
-SESSION_COOKIE_SECURE = False
-CSRF_COOKIE_SECURE = False
+# Enable HTTPS redirect and secure cookies for production
+if not DEBUG:
+    SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+    SECURE_BROWSER_XSS_FILTER = True
+    SECURE_CONTENT_TYPE_NOSNIFF = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    hsts_seconds = config('SECURE_HSTS_SECONDS', default=0, cast=int)
+    if hsts_seconds > 0:
+        SECURE_HSTS_SECONDS = hsts_seconds
+        SECURE_HSTS_INCLUDE_SUBDOMAINS = True
+        SECURE_HSTS_PRELOAD = True
+else:
+    SECURE_SSL_REDIRECT = False
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
 
 # ----------------------------
 # Installed apps
@@ -44,6 +57,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'sslserver',
     'myapp',
 ]
 
@@ -57,7 +71,7 @@ AUTHENTICATION_BACKENDS = [
 # Middleware
 # ----------------------------
 MIDDLEWARE = [
-    # Removed 'django.middleware.security.SecurityMiddleware' to disable HTTPS redirect
+    'django.middleware.security.SecurityMiddleware',
     'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files in production
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -92,9 +106,12 @@ TEMPLATES = [
 WSGI_APPLICATION = 'job.wsgi.application'
 
 # ----------------------------
-# Database (PostgreSQL for Render)
+# Database (SQLite default, PostgreSQL for Render/Production)
 # ----------------------------
 import sys
+
+default_db_url = config('DATABASE_URL', default=f'sqlite:///{BASE_DIR / "db.sqlite3"}')
+conn_max_age = 600 if 'postgres' in default_db_url else 0
 
 if 'test' in sys.argv:
     DATABASES = {
@@ -106,11 +123,8 @@ if 'test' in sys.argv:
 else:
     DATABASES = {
         'default': dj_database_url.config(
-            default=config(
-                'DATABASE_URL',
-                default='sqlite:///db.sqlite3'
-            ),
-            conn_max_age=600,
+            default=default_db_url,
+            conn_max_age=conn_max_age,
         )
     }
 
@@ -135,18 +149,20 @@ USE_TZ = True
 # Static files (CSS, JS, Images)
 # ----------------------------
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # Collected static files
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
 
+# static files inside installed apps (e.g. myapp/static) are discovered automatically
 STATICFILES_DIRS = []
-static_dir = os.path.join(BASE_DIR, 'myapp', 'static')
-if os.path.isdir(static_dir):
-    STATICFILES_DIRS.append(static_dir)
 
-# Enable WhiteNoise for serving static files in production
-if 'test' in sys.argv:
-    STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.StaticFilesStorage'
-else:
-    STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
+# Modern Django 4.2+ / 5.0+ Storages configuration
+STORAGES = {
+    "default": {
+        "BACKEND": "django.core.files.storage.FileSystemStorage",
+    },
+    "staticfiles": {
+        "BACKEND": "whitenoise.storage.CompressedStaticFilesStorage" if 'test' not in sys.argv else "django.contrib.staticfiles.storage.StaticFilesStorage",
+    },
+}
 
 # ----------------------------
 # Media files
@@ -165,6 +181,22 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/login/'
 
 # ----------------------------
-# Email backend (console for dev)
+# Messages & Bootstrap Styling
 # ----------------------------
-EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+from django.contrib.messages import constants as messages_constants
+MESSAGE_TAGS = {
+    messages_constants.ERROR: 'danger',
+}
+
+# ----------------------------
+# Email Configuration
+# ----------------------------
+EMAIL_BACKEND = config('EMAIL_BACKEND', default='django.core.mail.backends.console.EmailBackend')
+EMAIL_HOST = config('EMAIL_HOST', default='smtp.gmail.com')
+EMAIL_PORT = config('EMAIL_PORT', default=587, cast=int)
+EMAIL_USE_TLS = config('EMAIL_USE_TLS', default=True, cast=bool)
+EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='')
+EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='')
+DEFAULT_FROM_EMAIL = config('DEFAULT_FROM_EMAIL', default='noreply@jobportal.com')
+
+

@@ -21,8 +21,8 @@
           {% endif %}
         </div>
         <div class="profile-info">
-          <h1 class="profile-name">{{ user.first_name }} {{ user.last_name }}</h1>
-          <p class="profile-email">{{ user.email }}</p>
+          <h1 class="profile-name">{{ job_seeker.user.first_name }} {{ job_seeker.user.last_name }}</h1>
+          <p class="profile-email">{{ job_seeker.user.email }}</p>
           <p class="profile-location">{{ job_seeker.location|default:"Location not set" }}</p>
           <p class="profile-phone">{{ job_seeker.phone|default:"Phone not set" }}</p>
         </div>
@@ -145,6 +145,8 @@
           <button type="submit" class="btn btn-primary linkedin-btn">Save Changes</button>
         </form>
       </div>
+      {% else %}
+      {% include "partials/profile_display.html" %}
       {% endif %}
     </div>
   </div>

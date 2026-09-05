@@ -24,11 +24,12 @@ def home(request):
     try:
         # Query categories dynamically with count of active jobs
         categories = Category.objects.annotate(
-            job_count=Count('job')  # Removed is_active filter temporarily
+            job_count=Count('job', filter=Q(job__is_active=True))
         ).values('id', 'name', 'job_count')
 
-        # Query latest jobs with deadline not passed (removed is_active filter temporarily)
+        # Query latest jobs with deadline not passed
         latest_jobs_qs = Job.objects.filter(
+            is_active=True,
             application_deadline__gte=timezone.now().date()
         ).order_by('-created_at')[:5]
 
@@ -102,14 +103,36 @@ def logout_view(request):
 @login_required
 def job_list(request):
     try:
-        jobs = Job.objects.filter(application_deadline__gte=timezone.now().date())  # Removed is_active filter temporarily
-        query = request.GET.get('q')
+        categories = Category.objects.all().order_by('name')
+        jobs = Job.objects.filter(is_active=True, application_deadline__gte=timezone.now().date()).select_related('employer', 'category')
+        query = request.GET.get('q', '').strip()
+        category_param = request.GET.get('category', '').strip()
+
         if query:
-            jobs = jobs.filter(title__icontains=query)
-        return render(request, 'job_list.html', {'jobs': jobs})
+            jobs = jobs.filter(
+                Q(title__icontains=query) |
+                Q(employer__company_name__icontains=query) |
+                Q(location__icontains=query) |
+                Q(description__icontains=query) |
+                Q(requirements__icontains=query)
+            )
+
+        if category_param:
+            if category_param.isdigit():
+                jobs = jobs.filter(category_id=int(category_param))
+            else:
+                jobs = jobs.filter(category__name__iexact=category_param)
+
+        context = {
+            'jobs': jobs.order_by('-created_at'),
+            'categories': categories,
+            'selected_category': category_param,
+            'search_query': query,
+        }
+        return render(request, 'job_list.html', context)
     except Exception as e:
         logger.error(f"Error fetching jobs: {e}", exc_info=True)
-        return render(request, 'job_list.html', {'error': 'Error fetching jobs. Please try again later.', 'jobs': []})
+        return render(request, 'job_list.html', {'error': 'Error fetching jobs. Please try again later.', 'jobs': [], 'categories': []})
 
 @login_required
 def post_job(request):
@@ -229,6 +252,7 @@ def dashboard(request):
             # Trending jobs in user's category
             user_category = job_seeker.skills.split(',')[0] if job_seeker.skills else 'Technology'
             context['trending_jobs'] = Job.objects.filter(
+                is_active=True,
                 category__name__icontains=user_category
             ).order_by('-created_at')[:3]
 
@@ -308,7 +332,7 @@ def dashboard(request):
 
 @login_required
 def job_detail(request, job_id):
-    job = get_object_or_404(Job, id=job_id)
+    job = get_object_or_404(Job, id=job_id, is_active=True)
     return render(request, 'job_detail.html', {'job': job})
 
 @login_required
@@ -342,7 +366,7 @@ class JobApplicationForm(forms.ModelForm):
 @login_required
 @csrf_protect
 def apply_job(request, job_id):
-    job = get_object_or_404(Job, id=job_id)  # Removed is_active filter to avoid DatabaseError
+    job = get_object_or_404(Job, id=job_id, is_active=True)
     user = request.user
     job_seeker, created = JobSeeker.objects.get_or_create(user=user)
 
@@ -361,11 +385,13 @@ def apply_job(request, job_id):
             application = form.save(commit=False)
             application.job = job
             application.job_seeker = job_seeker
+            # Fallback to existing profile resume if no new file is uploaded
+            if not application.resume and job_seeker.resume:
+                application.resume = job_seeker.resume
             application.save()
 
             # Create application notification for employer
             try:
-                from .models import ApplicationNotification
                 ApplicationNotification.objects.create(
                     employer=job.employer,
                     job_application=application,
@@ -374,39 +400,20 @@ def apply_job(request, job_id):
             except Exception as e:
                 logger.error(f"Failed to create application notification: {e}")
 
-            # Send email to company email on job application
+            # Send email to employer on new job application
             company_email = job.employer.user.email if job.employer and job.employer.user else None
+            from_email = getattr(settings, 'DEFAULT_FROM_EMAIL', 'noreply@jobportal.com')
+            full_name = f"{user.first_name} {user.last_name}".strip() or user.username
+
             if company_email:
                 subject = f"New Job Application for {job.title}"
-                message = f"Dear {job.employer.company_name},\n\nYou have received a new application for the job '{job.title}'.\n\nPlease check the admin panel for details."
-                from_email = settings.EMAIL_HOST_USER
-                recipient_list = [company_email]
+                message = f"Dear {job.employer.company_name},\n\nYou have received a new application from {full_name} for the job '{job.title}'.\n\nPlease check your dashboard to review the application."
                 try:
-                    send_mail(subject, message, from_email, recipient_list)
+                    send_mail(subject, message, from_email, [company_email], fail_silently=True)
                 except Exception as e:
                     logger.error(f"Failed to send email notification: {e}")
 
-            # Prepare messages for user and employer
-            messages.success(request, "Your application has been submitted successfully. You can view your profile page.")
-            # Fix: CustomUser model does not have get_full_name, use first_name and last_name or username
-            full_name = f"{user.first_name} {user.last_name}".strip()
-            if not full_name:
-                full_name = user.username
-            employer_message = f"{full_name} has applied to your company. View applicant profile: {request.build_absolute_uri(reverse('view_profile', args=[user.pk]))}"
-
-            # Optionally, send email to employer with profile link
-            if company_email:
-                try:
-                    send_mail(
-                        f"New Application from {full_name}",
-                        employer_message,
-                        from_email,
-                        [company_email]
-                    )
-                except Exception as e:
-                    logger.error(f"Failed to send detailed email notification: {e}")
-
-            # Redirect to dashboard after successful application
+            messages.success(request, "Your application has been submitted successfully.")
             return redirect('dashboard')
     else:
         form = JobApplicationForm()
@@ -462,26 +469,28 @@ def view_applicant(request, application_id):
 @login_required
 def view_profile(request, user_id):
     try:
-        # Get the applicant user
-        applicant = get_object_or_404(get_user_model(), id=user_id)
+        # CustomUser primary key is email (user.pk), not id
+        applicant = get_object_or_404(get_user_model(), pk=user_id)
         job_seeker = get_object_or_404(JobSeeker, user=applicant)
 
-        # Check if the current user is an employer who has received an application from this user
-        try:
-            employer = Employer.objects.get(user=request.user)
-            # Check if there is an application from this job_seeker to any job posted by this employer
-            has_application = JobApplication.objects.filter(
-                job_seeker=job_seeker,
-                job__employer=employer
-            ).exists()
-            if not has_application:
-                messages.error(request, "You do not have permission to view this profile.")
+        # Allow user to view their own profile, or allow employers whose jobs the applicant applied for
+        if request.user != applicant:
+            try:
+                employer = Employer.objects.get(user=request.user)
+                has_application = JobApplication.objects.filter(
+                    job_seeker=job_seeker,
+                    job__employer=employer
+                ).exists()
+                if not has_application:
+                    messages.error(request, "You do not have permission to view this profile.")
+                    return HttpResponseRedirect(reverse('dashboard'))
+                # Record profile view
+                ProfileView.objects.get_or_create(job_seeker=job_seeker, employer=employer)
+            except Employer.DoesNotExist:
+                messages.error(request, "Only employers can view applicant profiles.")
                 return HttpResponseRedirect(reverse('dashboard'))
-        except Employer.DoesNotExist:
-            messages.error(request, "Only employers can view applicant profiles.")
-            return HttpResponseRedirect(reverse('dashboard'))
 
-        # Render the profile using the update_resume template
+        # Render the profile using the update_resume template with view_only mode
         return render(request, 'update_resume.html', {'job_seeker': job_seeker, 'view_only': True})
     except Exception as e:
         logger.error(f"Error in view_profile: {e}", exc_info=True)

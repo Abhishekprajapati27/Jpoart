@@ -74,3 +74,71 @@ class JobPortalTests(TestCase):
             'password': 'newpassword123',
         })
         self.assertEqual(login_response.status_code, 302)  # Redirect after login
+
+    def test_job_list_search_and_category(self):
+        # Create second category and job
+        cat2 = Category.objects.create(name="Design")
+        Job.objects.create(
+            title="Graphic Designer",
+            description="Create branding assets",
+            requirements="Figma, Photoshop",
+            location="Remote",
+            job_type="remote",
+            salary="2000",
+            category=cat2,
+            employer=self.employer,
+            application_deadline=timezone.now().date() + timedelta(days=10),
+            is_active=True
+        )
+
+        # Search by keyword
+        response = self.client.get(reverse('job_list') + '?q=Designer')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Graphic Designer")
+        self.assertNotContains(response, "Test Job")
+
+        # Filter by category id
+        response = self.client.get(reverse('job_list') + f'?category={cat2.id}')
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Graphic Designer")
+        self.assertNotContains(response, "Test Job")
+
+    def test_view_profile_permissions(self):
+        # Create applicant user and job seeker profile
+        applicant = User.objects.create_user(
+            email="applicant@example.com",
+            password="testpassword123",
+            username="applicant"
+        )
+        seeker = JobSeeker.objects.create(
+            user=applicant,
+            phone="1234567890",
+            location="City",
+            about="Passionate software engineer",
+            skills="Python, Django"
+        )
+
+        # Apply to self.job (employer is self.user)
+        JobApplication.objects.create(
+            job=self.job,
+            job_seeker=seeker,
+            cover_letter="Interested in this role"
+        )
+
+        # Login as employer (self.user) and view applicant profile
+        self.client.login(email=self.user_email, password=self.user_password)
+        response = self.client.get(reverse('view_profile', args=[applicant.pk]))
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Passionate software engineer")
+        self.assertContains(response, "Python")
+
+        # Unrelated employer should be denied
+        other_user = User.objects.create_user(
+            email="other@example.com",
+            password="testpassword123",
+            username="otheremployer"
+        )
+        Employer.objects.create(user=other_user, company_name="Other Inc")
+        self.client.login(email="other@example.com", password="testpassword123")
+        unauth_response = self.client.get(reverse('view_profile', args=[applicant.pk]))
+        self.assertEqual(unauth_response.status_code, 302)  # Redirected with permission error

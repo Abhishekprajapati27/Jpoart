@@ -1,19 +1,57 @@
-*.pyc
+# Byte-compiled / optimized / DLL files
 __pycache__/
-db.sqlite3
-*.sqlite3
-/media/
-*.log
-.env
-venv/
-.venv/
-.DS_Store
+*.py[cod]
+*$py.class
 *.pyo
 *.pyd
-.idea/
-.vscode/
-*.bak
-*.swp
+
+# C extensions
+*.so
+
+# Environments
+.env
+.env.local
+.venv/
+venv/
+env/
+ENV/
+
+# Database
+*.sqlite3
+db.sqlite3
+job/db.sqlite3
+*.sqlite3-journal
+
+# Media and collected static files
+media/
+job/media/
 staticfiles/
+job/staticfiles/
+job/applications/
+job/profile_pics/
+job/resumes/
 profile_pics/
 resumes/
+
+# SSL Certificates & Keys (local dev only)
+*.pem
+*.key
+scripts/*.pem
+scripts/*.key
+
+# Testing & Cache
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Logs
+*.log
+
+# Operating System & IDE
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*.swo
+*.bak
